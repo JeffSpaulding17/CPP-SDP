@@ -1,4 +1,4 @@
-dht_example.py                                                                                                           
+# dht_example.py --> developed by Adafruit
 import time
 import board
 import adafruit_dht
