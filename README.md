@@ -1,6 +1,6 @@
 # Temperature/Humidity Sensor Network using an SDN and How to Reduce its Power Consumption
 
-### Code developed by Jeffery Spaulding and Derek Mata
+### Developed by: Jeffery Spaulding & Derek Mata
 
 ---
 
