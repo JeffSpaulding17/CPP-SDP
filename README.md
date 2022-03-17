@@ -10,7 +10,7 @@ In this project, we will be developing a network of temperature sensors controll
 
 ### Overall Progress / What Needs to be Done
 - [x] Developed temperature/humidity senesor gathering code
-- [ ] Developed `.csv` compilation of sensor data
+- [x] Developed `.csv` compilation of sensor data
 - [ ] Properly configure the SDN to be able to send packets over the network
 - [ ] Send data over the SDN to the master Raspberry Pi
 - [ ] Gather power consumption data for this process
@@ -20,13 +20,21 @@ In this project, we will be developing a network of temperature sensors controll
 
 
 ### Dependencies used
-- `time`
-- `board`
-- `adafruit_dht`
-- `os`
-- `csv`
+- Sensor libraries
+    - `board`
+    - `adafruit_dht`
+- General OS interactions
+    - `os`
+    - `sys`
+    - `time`
+- Interaction with csv files
+    - `csv`
 
 
-### Files in Repository
+### Files used in main program
 - `sensor.py`
+- `main.py`
+ 
+
+### Testing Files
 - `csv_conversion.py`
