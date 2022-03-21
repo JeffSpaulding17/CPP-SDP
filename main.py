@@ -59,18 +59,11 @@ def get_sensor_data(temp_sense_obj: sensor.temperature_sensor):
 ##################################################
 # Create the csv file with permissions of -rw-rw-rw
 def make_csv(add_header=False):
-    try:
-        os.umask(0)
-        os.open(file_path, os.O_CREAT | os.O_RDWR, 0o666)
-        os.close(file_path)
+    os.umask(0)
+    with open(file_path, "w+") as csv_file:
         if(add_header):
-            write_to_csv(header=True)
-    except FileExistsError as exist:
-        print("File already exists, passing")
-        pass
-    except Exception as err:
-        print("Error making csv file: " + err)
-        sys.exit(1)
+            csv_wr_obj = csv.write(csv_file)
+            csv_wr_obj.writerow(col_headers)
     return
 
 ###############################
