@@ -46,9 +46,9 @@ col_data = list()
 ##################################################
 # Get the temperature data from the sensor on RPi
 def get_sensor_data(temp_sense_obj: sensor.temperature_sensor):
-    temp_c, temp_f = temp_sense_obj.get_temp()
+    temp_f = temp_sense_obj.get_temp()
     humidity = temp_sense_obj.get_humidity()
-    return (temp_f, temp_c, humidity)
+    return (temp_f, humidity)
 
 
 
@@ -62,7 +62,7 @@ def make_csv(add_header=False):
     os.umask(0)
     with open(file_path, "w+") as csv_file:
         if(add_header):
-            csv_wr_obj = csv.write(csv_file)
+            csv_wr_obj = csv.writer(csv_file)
             csv_wr_obj.writerow(col_headers)
     return
 
@@ -118,17 +118,18 @@ def main():
     
     # Get 5 rows of data from temperature sensor --> 10 seconds
     for i in range(5):
-        temp_f, temp_c, humidity = get_sensor_data(temp_sense_obj)
+        temp_f, humidity = get_sensor_data(temp_sense_obj)
         timestamp = time.time() - start_time
         data_list = [str(round(timestamp, 5)), str(round(temp_f, 2)), str(round(humidity, 2))]
         col_data.append(data_list)
+        print(data_list)
         time.sleep(2)
     
     # Write col_data to csv file
     write_to_csv()
     
     # Clear the csv file content and test if it was deleted
-    delete_csv_data()
+    #delete_csv_data()
     with open(file_path, "r") as csv_file:
         csv_read_obj = csv.reader(csv_file)
         rows = []
