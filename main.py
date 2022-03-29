@@ -29,13 +29,18 @@ import sensor
 #                PROGRAM CONSTANTS               #
 #                                                #
 ##################################################
-# csv file information
-file_name = "test.csv"
+# csv file name and path
+pi_id = os.popen("cat pi.id")
+file_name = "pi-" + pi_id + "-temp-data.csv"
 file_path = os.path.abspath( os.path.join(os.path.dirname(__file__), file_name) )
 
 # csv row data
 col_headers = ["Timestamp (s)", "Temperature (F)", "Humidity (%% air-water mix compared to dew point)"]
 col_data = list()
+
+# csv last line sent to master pi and the number of lines in the csv file
+csv_file_len = 0
+last_master_csv_line = 0
 
 
 
@@ -50,6 +55,14 @@ def get_sensor_data(temp_sense_obj: sensor.temperature_sensor):
     humidity = temp_sense_obj.get_humidity()
     return (temp_f, humidity)
 
+###############################
+
+# Get the timestamp, temperature, and humidity for that row
+def get_row_data(temp_sense_obj: sensor.temperature_sensor, start_time: float):
+    temp_f, humidity = get_sensor_data(temp_sense_obj)
+    timestamp = timestamp = time.time() - start_time
+    data_list = [str(round(timestamp, 5)), str(round(temp_f, 2)), str(round(humidity, 2))]
+    col_data.append(data_list)
 
 
 ##################################################
@@ -59,30 +72,45 @@ def get_sensor_data(temp_sense_obj: sensor.temperature_sensor):
 ##################################################
 # Create the csv file with permissions of -rw-rw-rw
 def make_csv(add_header=False):
+    global csv_file_len
     os.umask(0)
     with open(file_path, "w+") as csv_file:
         if(add_header):
             csv_wr_obj = csv.writer(csv_file)
             csv_wr_obj.writerow(col_headers)
+            csv_file_len += 1
     return
 
 ###############################
 
 # Write data to the csv file and remove old data after
 def write_to_csv(header=False):
+    global csv_file_len
+    global last_master_csv_line
     with open(file_path, "a", newline="") as csv_file:
         csv_wr_obj = csv.writer(csv_file)
         if(header):
             csv_wr_obj.writerow(col_headers)
+            csv_file_len += 1
         else:
+            last_master_csv_line += len(col_data)
             csv_wr_obj.writerows(col_data)
-    col_data.clear()
+            csv_file_len += len(col_data)
+            col_data.clear()
     return
 
 ###############################
 
 # Send the csv file to the master RPi
 def send_csv_to_master():
+    global last_master_csv_line
+    global csv_file_len
+    
+    # If no data was gathered since last asking, do nothing
+    if(last_master_csv_line == csv_file_len):
+        return
+    
+    # Send master the lines it has not yet received before
     pass
 
 ###############################
@@ -113,20 +141,24 @@ def main():
     # Create Temperature Sensor object
     temp_sense_obj = sensor.temperature_sensor()
     
-    # Create the csv file, and its writer object
+    
+    # TODO: asynchronous TCP server
+    
+    
+    # Check if previous run had .csv file, if so delete it
+    if os.path.exists(file_path):
+        delete_csv_data()
+    
+    # Create the csv file
     make_csv(add_header=True)
     
-    # Get 5 rows of data from temperature sensor --> 10 seconds
-    for i in range(5):
-        temp_f, humidity = get_sensor_data(temp_sense_obj)
-        timestamp = time.time() - start_time
-        data_list = [str(round(timestamp, 5)), str(round(temp_f, 2)), str(round(humidity, 2))]
-        col_data.append(data_list)
-        print(data_list)
-        time.sleep(2)
-    
-    # Write col_data to csv file
-    write_to_csv()
+    # Gather 5 data points before writing to csv file
+    send_to_master_flag = False
+    while not send_to_master_flag:
+        for i in range(5):
+            get_row_data(temp_sense_obj, start_time)
+            time.sleep(2)
+        write_to_csv()
     
     # Clear the csv file content and test if it was deleted
     #delete_csv_data()
