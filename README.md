@@ -11,8 +11,8 @@ In this project, we will be developing a network of temperature sensors controll
 ### Overall Progress / What Needs to be Done
 - [x] Developed temperature/humidity senesor gathering code
 - [x] Developed `.csv` compilation of sensor data
-- [ ] Properly configure the SDN to be able to send packets over the network
-- [ ] Send data over the SDN to the master Raspberry Pi
+- [x] Properly configure the SDN to be able to send packets over the network
+- [x] Send data over the SDN to the master Raspberry Pi
 - [ ] Gather power consumption data for this process
 - [ ] Reduce the overall power consumption 
 - [ ] Gather reduced power consumption for this process
