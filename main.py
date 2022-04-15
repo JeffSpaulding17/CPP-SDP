@@ -17,7 +17,9 @@ import time
 
 # Libraries for sensor data retrieval 
 import board
+import busio
 import adafruit_dht
+import adafruit_ina260
 
 # Custom made libraries
 import sensor
