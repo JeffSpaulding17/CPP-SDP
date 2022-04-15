@@ -13,8 +13,6 @@ import csv
 
 # General OS interaction libraries
 import os
-from readline import write_history_file
-import sys
 import time
 
 # Libraries for sensor data retrieval 
@@ -32,7 +30,7 @@ import sensor
 ##################################################
 # csv file name and path
 pi_id = os.popen("cat pi.id")
-file_name = "pi-" + pi_id + "-temp-data.csv"
+file_name = "pi-" + str(pi_id) + "-temp-data.csv"
 file_path = os.path.abspath( os.path.join(os.path.dirname(__file__), file_name) )
 
 # csv row data
