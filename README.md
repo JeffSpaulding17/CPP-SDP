@@ -34,7 +34,3 @@ In this project, we will be developing a network of temperature sensors controll
 ### Files used in main program
 - `sensor.py`
 - `main.py`
- 
-
-### Testing Files
-- `csv_conversion.py`
