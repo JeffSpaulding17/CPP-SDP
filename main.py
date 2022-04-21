@@ -14,6 +14,7 @@ import csv
 # General OS interaction libraries
 import os
 import time
+import datetime
 
 # Libraries for sensor data retrieval 
 import board
@@ -36,7 +37,7 @@ file_name = f"pi-{pi_id[0]}-temp-data.csv"
 file_path = os.path.abspath( os.path.join(os.path.dirname(__file__), file_name) )
 
 # csv row data
-col_headers = ["Timestamp (s)", "Temperature (F)", "Humidity (%% air-water mix compared to dew point)", "Current (mA)", "Voltage (V)", "Power (mW)"]
+col_headers = ["Timestamp (UTC)", "Temperature (F)", "Humidity (%% air-water mix compared to dew point)", "Current (mA)", "Voltage (V)", "Power (mW)"]
 col_data = list()
 
 
@@ -62,11 +63,12 @@ def get_power_sensor_data(power_sense_obj: sensor.power_sensor):
 ###############################
 
 # Get the timestamp, temperature, and humidity for that row
-def get_row_data(temp_sense_obj: sensor.temperature_sensor, power_sense_obj: sensor.power_sensor, start_time: float):
+def get_row_data(temp_sense_obj: sensor.temperature_sensor, power_sense_obj: sensor.power_sensor):
     temp_f, humidity = get_temp_sensor_data(temp_sense_obj)
     current, voltage, power = get_power_sensor_data(power_sense_obj)
-    timestamp = timestamp = time.time() - start_time
-    data_list = [str(round(timestamp, 5)), str(round(temp_f, 2)), str(round(humidity, 2)), str(round(current, 2)), str(round(voltage, 2)), str(round(power, 2))]
+    timestamp_obj = datetime.datetime.utcnow()
+    timestamp = timestamp_obj.strftime("%m-%d-%Y %H:%M:%S")
+    data_list = [timestamp, str(round(temp_f, 2)), str(round(humidity, 2)), str(round(current, 2)), str(round(voltage, 2)), str(round(power, 2))]
     print("\t", end="")
     print(data_list)
     col_data.append(data_list)
@@ -110,11 +112,6 @@ def write_to_csv(header=False):
 #                                                #
 ##################################################
 def main():  
-
-    print(f"pi.id = {pi_id}")
-    print(f"file_name = {file_name}")
-    print(f"file_path = {file_path}")
-
     # Start system timer for timestamps
     start_time = time.time()
       
@@ -130,9 +127,9 @@ def main():
     
     # Gather data points every second until user presses CTRL+C or end with exception, then write everything to csv file
     try:
-        print("Now gathering data from temperature sensor [timestamp (sec), temp (F), humidity (%), current (mA), voltage (V), power (mW)]:")
+        print("Now gathering data from temperature sensor [timestamp (UTC), temp (F), humidity (%), current (mA), voltage (V), power (mW)]:")
         while True:
-            get_row_data(temp_sense_obj, power_sense_obj, start_time)
+            get_row_data(temp_sense_obj, power_sense_obj)
             time.sleep(1)
     except KeyboardInterrupt as k:
         print("Stopping data collection...")
