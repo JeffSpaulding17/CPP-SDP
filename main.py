@@ -31,8 +31,8 @@ import sensor
 #                                                #
 ##################################################
 # csv file name and path
-pi_id = os.popen("cat pi.id")
-file_name = "pi-" + str(pi_id) + "-temp-data.csv"
+pi_id = os.popen("cat pi.id").readline()
+file_name = f"pi-{pi_id[0]}-temp-data.csv"
 file_path = os.path.abspath( os.path.join(os.path.dirname(__file__), file_name) )
 
 # csv row data
@@ -110,6 +110,11 @@ def write_to_csv(header=False):
 #                                                #
 ##################################################
 def main():  
+
+    print(f"pi.id = {pi_id}")
+    print(f"file_name = {file_name}")
+    print(f"file_path = {file_path}")
+
     # Start system timer for timestamps
     start_time = time.time()
       
