@@ -36,7 +36,7 @@ file_name = "pi-" + str(pi_id) + "-temp-data.csv"
 file_path = os.path.abspath( os.path.join(os.path.dirname(__file__), file_name) )
 
 # csv row data
-col_headers = ["Timestamp (s)", "Temperature (F)", "Humidity (%% air-water mix compared to dew point)"]
+col_headers = ["Timestamp (s)", "Temperature (F)", "Humidity (%% air-water mix compared to dew point)", "Current (mA)", "Voltage (V)", "Power (mW)"]
 col_data = list()
 
 
@@ -47,18 +47,26 @@ col_data = list()
 #                                                #
 ##################################################
 # Get the temperature data from the sensor on RPi
-def get_sensor_data(temp_sense_obj: sensor.temperature_sensor):
+def get_temp_sensor_data(temp_sense_obj: sensor.temperature_sensor):
     temp_f = temp_sense_obj.get_temp()
     humidity = temp_sense_obj.get_humidity()
     return (temp_f, humidity)
 
 ###############################
 
+# Get current (mA), voltage (V), power(mW) from sensor on RPi
+def get_power_sensor_data(power_sense_obj: sensor.power_sensor):
+    current, voltage, power = power_sense_obj.get_cvp()
+    return (current, voltage, power)
+
+###############################
+
 # Get the timestamp, temperature, and humidity for that row
-def get_row_data(temp_sense_obj: sensor.temperature_sensor, start_time: float):
-    temp_f, humidity = get_sensor_data(temp_sense_obj)
+def get_row_data(temp_sense_obj: sensor.temperature_sensor, power_sense_obj: sensor.power_sensor, start_time: float):
+    temp_f, humidity = get_temp_sensor_data(temp_sense_obj)
+    current, voltage, power = get_power_sensor_data(power_sense_obj)
     timestamp = timestamp = time.time() - start_time
-    data_list = [str(round(timestamp, 5)), str(round(temp_f, 2)), str(round(humidity, 2))]
+    data_list = [str(round(timestamp, 5)), str(round(temp_f, 2)), str(round(humidity, 2)), str(round(current, 2)), str(round(voltage, 2)), str(round(power, 2))]
     print("\t", end="")
     print(data_list)
     col_data.append(data_list)
@@ -109,7 +117,7 @@ def main():
     temp_sense_obj = sensor.temperature_sensor()    
     
     # Create power sensor object
-    # power_sense_obj = sensor.power_sensor()
+    power_sense_obj = sensor.power_sensor()
     
     # Check if previous run had .csv file, if not make it
     if not os.path.exists(file_path):
@@ -117,9 +125,9 @@ def main():
     
     # Gather data points every second until user presses CTRL+C or end with exception, then write everything to csv file
     try:
-        print("Now gathering data from temperature sensor [timestamp, temp_f, humidity %]:")
+        print("Now gathering data from temperature sensor [timestamp (sec), temp (F), humidity (%), current (mA), voltage (V), power (mW)]:")
         while True:
-            get_row_data(temp_sense_obj, start_time)
+            get_row_data(temp_sense_obj, power_sense_obj, start_time)
             time.sleep(1)
     except KeyboardInterrupt as k:
         print("Stopping data collection...")

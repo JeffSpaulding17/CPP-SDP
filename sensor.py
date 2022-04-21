@@ -14,6 +14,7 @@ import board
 import busio
 import adafruit_dht
 import adafruit_ina260
+import RPi.GPIO as GPIO
  
 # Initial the dht device, with data pin connected to:
 # dhtDevice = adafruit_dht.DHT11(board.D4)
@@ -27,7 +28,7 @@ import adafruit_ina260
 class temperature_sensor:
     # Constructor --> initialize the temperature sensor object with adafruit library, and create temperatrues and humidity
     def __init__(self):
-        self.dhtDevice = adafruit_dht.DHT11(board.SCL, use_pulseio=False)
+        self.dhtDevice = adafruit_dht.DHT11(board.D4)
         self.temp_c = 0
         self.temp_f = 0
         self.humidity = 0.0        
