@@ -14,8 +14,8 @@ In this project, we will be developing a network of temperature sensors controll
 - [x] Properly configure the SDN to be able to send packets over the network
 - [x] Send data over the SDN to the master Raspberry Pi
 - [x] Gather power consumption data for this process
-- [ ] Reduce the overall power consumption 
-- [ ] Gather reduced power consumption for this process
+- [x] Reduce the overall power consumption 
+- [x] Gather reduced power consumption for this process
 - [ ] Visualize the data
 
 
@@ -34,3 +34,8 @@ In this project, we will be developing a network of temperature sensors controll
 ### Files used in main program
 - `sensor.py`
 - `main.py`
+
+
+### Scripts to configure RPi from fresh Raspbian image flash
+- `init_rpi_script_1.sh`
+- `init_rpi_script_2.sh`
