@@ -39,3 +39,4 @@ In this project, we will be developing a network of temperature sensors controll
 ### Scripts to configure RPi from fresh Raspbian image flash
 - `init_rpi_script_1.sh`
 - `init_rpi_script_2.sh`
+- `blinkatest.py`
