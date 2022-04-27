@@ -111,10 +111,7 @@ def write_to_csv(header=False):
 #                  MAIN FUNCTION                 #
 #                                                #
 ##################################################
-def main():  
-    # Start system timer for timestamps
-    start_time = time.time()
-      
+def main():        
     # Create Temperature Sensor object
     temp_sense_obj = sensor.temperature_sensor()    
     

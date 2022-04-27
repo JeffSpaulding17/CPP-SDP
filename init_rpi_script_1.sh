@@ -13,6 +13,9 @@ sudo apt install python-pip
 sudo pip install wheel
 sudo pip3 install --upgrade setuptools
 
+echo "Enabling SSH"
+sudo raspi-config nonint do_ssh 1
+
 echo "Getting circuitpython from adafruit..."
 sudo pip3 install --upgrade adafruit-python-shell
 wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
